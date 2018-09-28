@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>推荐视图</title>
+    <link rel="stylesheet" href="./css/jquery.jOrgChart.css">
+    <script src="./jquery-1.8.2.js"></script>
+    <script src="jquery.jOrgChart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        a {
+            color: #fff;
+            text-decoration: none;
+        }
+        
+        .jOrgChart .node {
+            background: #cc9901;
+            width: 130px;
+            height: 195px;
+            border-radius: 8px;
+        }
+        
+        .jOrgChart .node h3 {
+            font-size: 16px;
+        }
+        
+        .jOrgChart .node img {
+            max-width: 70%;
+            margin-top: 10px;
+        }
+        
+        .jOrgChart .top,
+        .jOrgChart .left,
+        .jOrgChart .right {
+            border-color: #cc9901 !important;
+        }
+        
+        .jOrgChart .down {
+            background: #cc9901 !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!--显示组织架构图-->
+    <div id='jOrgChart'></div>
+
+    <script>
+        var d = [{
+            "id": 1,
+            "name": "T1823",
+            "dj": "普通会员",
+            "date": "",
+            "pid": null,
+            "childrens": [{
+                "id": 2,
+                "name": "T1821",
+                "dj": "普通会员",
+                "date": "",
+                "pid": 1,
+                "childrens": [{
+                    "id": 5,
+                    "name": "T1123",
+                    "dj": "普通会员",
+                    "date": "",
+                    "pid": 2,
+                    "childrens": [{
+                        "id": 10,
+                        "name": "T3823",
+                        "dj": "普通会员",
+                        "date": "",
+                        "pid": 5,
+                        "childrens": []
+                    }, {
+                        "id": 11,
+                        "name": "T1825",
+                        "dj": "普通会员",
+                        "date": "",
+                        "pid": 5,
+                        "childrens": []
+                    }, {
+                        "id": 12,
+                        "name": "T1829",
+                        "dj": "普通会员",
+                        "date": "",
+                        "pid": 5,
+                        "childrens": []
+                    }]
+                }, {
+                    "id": 6,
+                    "name": "T1811",
+                    "dj": "普通会员",
+                    "date": "",
+                    "pid": 2,
+                    "childrens": [{
+                        "id": 13,
+                        "name": "T3323",
+                        "dj": "普通会员",
+                        "date": "",
+                        "pid": 6,
+                        "childrens": []
+                    }]
+                }]
+            }, {
+                "id": 3,
+                "name": "T1222",
+                "dj": "普通会员",
+                "date": "",
+                "pid": 1,
+                "childrens": [{
+                    "id": 7,
+                    "name": "T3623",
+                    "dj": "普通会员",
+                    "date": "",
+                    "pid": 3,
+                    "childrens": [{
+                        "id": 14,
+                        "name": "T5566",
+                        "dj": "普通会员",
+                        "date": "",
+                        "pid": 7,
+                        "childrens": []
+                    }]
+                }, {
+                    "id": 8,
+                    "name": "T1823",
+                    "dj": "普通会员",
+                    "date": "",
+                    "pid": 3,
+                    "childrens": [{
+                        "id": 15,
+                        "name": "T9923",
+                        "dj": "普通会员",
+                        "date": "2018-05-03",
+                        "pid": 8,
+                        "childrens": []
+                    }]
+                }]
+            }, {
+                "id": 4,
+                "name": "T1888",
+                "dj": "普通会员",
+                "date": "",
+                "pid": 1,
+                "childrens": [{
+                    "id": 9,
+                    "name": "T1665",
+                    "dj": "普通会员",
+                    "date": "2018-05-03",
+                    "pid": 4,
+                    "childrens": [{
+                        "id": 16,
+                        "name": "T1855",
+                        "dj": "普通会员",
+                        "date": "2018-05-03",
+                        "pid": 9,
+                        "childrens": []
+                    }]
+                }]
+            }]
+        }]
+
+        var showlist = $("<ul id='org' style='display:none'></ul>");
+        showall(d, showlist);
+        $("#jOrgChart").append(showlist);
+        $("#org").jOrgChart({
+            chartElement: '#jOrgChart', //指定在某个dom生成jorgchart
+            dragAndDrop: false //设置是否可拖动
+        });
+
+        function showall(menu_list, parent) {
+            $.each(menu_list, function(index, val) {
+                if (val.childrens.length > 0) {
+
+                    var li = $("<li></li>");
+                    li.append("<a href='javascript:void(0)' onclick=getOrgId(" + val.id + ");><img src='./images/logo.png'><h3>" + val.name + "</h3><div>-</div><div class='hydj'>" + val.dj + "</div><div class='date'>" + val.date + "</div></a>").append("<ul></ul>").appendTo(parent);
+                    //递归显示
+                    showall(val.childrens, $(li).children().eq(1));
+                } else {
+                    $("<li></li>").append("<a href='javascript:void(0)' onclick=getOrgId(" + val.id + ");><img src='./images/logo.png'><h3>" + val.name + "</h3><div>-</div><div class='hydj'>" + val.dj + "</div><div class='date'>" + val.date + "</div></a>").appendTo(parent);
+                }
+            });
+
+        }
+    </script>
+</body>
+
+</html>
